@@ -5,16 +5,16 @@ homepage: "https://github.com/naneps/log_removal"
 
 
 executables:
-  log_removal: bin/log_removal.dart
+  log_removal: log_removal
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: '>=2.12.0 <4.0.0'
+
 
 dependencies:
+  dart_console: ^1.2.0
   interact: ^2.2.0
 
 
 dev_dependencies:
-  ansicolor: ^2.0.3
-  console: ^4.1.0
   lints: ^2.0.0
