@@ -1,5 +1,20 @@
 # Changelog
 
+
+## [1.1.0] 2025-01-26
+### Added
+- Support for selecting specific log patterns to remove.
+- Improved user interface with clearer instructions and options.
+- Enhanced error handling and validation for user inputs.
+- Display of processing status and completion message.
+- Option to view the cleaned files and logs removed after processing.
+- Support for custom regular expressions to remove logs.
+- Updated README with detailed instructions on how to use the CLI tool.
+  
+### Changed
+- Refactored codebase for better modularity and readability.
+- Improved performance and efficiency of log removal operations.
+
 ## [1.0.0+1] 2025-01-25
 
   
