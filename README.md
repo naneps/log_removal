@@ -3,7 +3,7 @@
 
 # Log Removal
 
-🔧 **Log Removal CLI** is a command-line tool for cleaning up Dart/Flutter projects from unwanted logs such as `print`, `debugPrint`, `logger`, and other custom log patterns.
+🔧 **Log Removal** is a command-line tool for cleaning up Dart/Flutter projects from unwanted logs such as `print`, `debugPrint`, `logger`, and other custom log patterns.
 
 This tool allows users to select which log patterns they want to remove, either by using predefined patterns or adding their own custom patterns. It can be installed globally for easy access across multiple projects.
 
@@ -23,7 +23,7 @@ This tool allows users to select which log patterns they want to remove, either 
 
 ### Global Installation
 
-To install **Log Removal CLI** globally, run the following command:
+To install **Log Removal** globally, run the following command:
 
 ```bash
 dart pub global activate log_removal_cli
@@ -33,11 +33,11 @@ Once installed globally, you can use `log_removal` in any Dart/Flutter project w
 
 ### Local Installation
 
-To use **Log Removal CLI** in a specific project, add it as a dependency in your Dart/Flutter project by running:
+To use **Log Removal** in a specific project, add it as a dependency in your Dart/Flutter project by running:
 
 ```yaml
 dependencies:
-  log_removal_cli: <latest_version>
+  log_removal: <latest_version>
 ```
 
 Then, run it using the `dart run` command in your project.
@@ -83,7 +83,7 @@ After selecting the patterns, the program will process the chosen files and remo
 
 ```bash
 $ dart run log_removal_cli
-🔧 Welcome to Log Removal CLI!
+🔧 Welcome to Log Removal!
 Let's clean up your project from unwanted logs. 🚀
 
 📂 Select a folder from the current directory:

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.0+1] 2025-01-25
+
+  
+### Changed
+- Updated README with detailed instructions on how to use the CLI tool.
+
 ## [1.0.0] - 2025-01-25
 ### Added
 - Initial release of `log_removal` CLI tool.
