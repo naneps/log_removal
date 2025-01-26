@@ -2,7 +2,11 @@ import 'dart:io';
 
 import 'package:interact/interact.dart';
 
-enum OperationType { specificFile, specificFolder, entireProject }
+enum OperationType {
+  entireProject,
+  specificFile,
+  specificFolder,
+}
 
 extension OperationTypeExtension on OperationType {
   String get name {
@@ -22,49 +26,128 @@ class DirectorySelector {
     final choiceIndex = Select(
       prompt: 'Choose an operation:',
       options: OperationType.values.map((type) => type.name).toList(),
-      initialIndex: 0,
     ).interact();
 
-    switch (choiceIndex) {
-      case 0:
-        return OperationType.specificFile;
-      case 1:
-        return OperationType.specificFolder;
-      case 2:
-        return OperationType.entireProject;
+    return OperationType.values[choiceIndex];
+  }
+
+  String selectTargetPath(OperationType operationType) {
+    switch (operationType) {
+      case OperationType.specificFile:
+        return selectSpecificFiles();
+      case OperationType.specificFolder:
+        return selectFolderPath();
+      case OperationType.entireProject:
+        return confirmEntireProject();
       default:
         throw Exception('Invalid operation selected.');
     }
   }
 
-  String selectPath({required bool showFiles}) {
+  // Method to select specific files grouped by path
+  String selectSpecificFiles() {
+    final currentDir = Directory.current;
+
+    final filesByPath = <String, List<String>>{};
+    currentDir
+        .listSync(recursive: true)
+        .where((entity) => entity is File && entity.path.endsWith('.dart'))
+        .forEach((file) {
+      final dirPath = Directory(file.parent.path).path;
+      if (!filesByPath.containsKey(dirPath)) {
+        filesByPath[dirPath] = [];
+      }
+      filesByPath[dirPath]?.add(file.path);
+    });
+
+    if (filesByPath.isEmpty) {
+      exit(1);
+    }
+
+    // Display grouped files by path
+    final groupedEntries = <String>[];
+    filesByPath.forEach((dir, files) {
+      groupedEntries.add('📁 $dir');
+      groupedEntries.addAll(files.map((file) => '  - $file').toList());
+    });
+
+    final selectedIndex = Select(
+      prompt: 'Choose a Dart file:',
+      options: groupedEntries,
+    ).interact();
+
+    final selectedPath = groupedEntries[selectedIndex];
+    if (selectedPath.startsWith('  - ')) {
+      return selectedPath.substring(4); // Return file path
+    } else {
+      exit(1);
+    }
+  }
+
+  // Confirmation step for selecting the entire project
+  String confirmEntireProject() {
+    final confirmation = Confirm(
+      prompt: 'Are you sure you want to select the entire project?',
+      defaultValue: false,
+    ).interact();
+
+    if (confirmation) {
+      return Directory.current.path; // Return entire project path
+    } else {
+      exit(1);
+    }
+  }
+
+  // Updated method to allow selecting folders without adding folder name prefix
+  String selectFolderPath() {
+    String currentDir = Directory.current.path;
+
     while (true) {
-      final currentDir = Directory.current;
-      final entries = currentDir
+      final entries = Directory(currentDir)
           .listSync()
-          .where((entity) => showFiles ? true : entity is Directory)
+          .where((entity) =>
+              entity is Directory &&
+              !entity.path
+                  .split(Platform.pathSeparator)
+                  .last
+                  .startsWith('.')) // Exclude hidden folders
           .map((entity) => entity.path.split(Platform.pathSeparator).last)
           .toList();
 
       if (entries.isEmpty) {
-        print(
-            '❌ No ${showFiles ? "files or folders" : "folders"} found in the current directory.');
         exit(1);
       }
 
+      // Display folder options in a cleaner format
       final selectedIndex = Select(
-        prompt: 'Choose ${showFiles ? "a file or folder" : "a folder"}:',
-        options: entries,
+        prompt: 'Choose a folder:',
+        options: [
+          ...entries,
+          '.. (Go back)' // Add '..' option to go up one level
+        ],
       ).interact();
 
-      final selectedPath = '${currentDir.path}/${entries[selectedIndex]}';
-
-      if (showFiles && File(selectedPath).existsSync()) {
-        return selectedPath; // File valid
-      } else if (!showFiles && Directory(selectedPath).existsSync()) {
-        return selectedPath; // Folder valid
+      if (selectedIndex == entries.length) {
+        // Going up one level
+        if (Directory(currentDir).parent.path == currentDir) {
+          continue;
+        }
+        currentDir = Directory(currentDir).parent.path;
       } else {
-        print('❌ Invalid selection. Please try again.');
+        final selectedFolder = entries[selectedIndex];
+        final selectedFolderPath =
+            '$currentDir$Platform.pathSeparator$selectedFolder';
+
+        // If the user selects a folder, go into that folder
+        if (Directory(selectedFolderPath).existsSync()) {
+          currentDir = selectedFolderPath;
+        }
+      }
+
+      // When a valid folder is selected
+      if (Directory(currentDir).existsSync()) {
+        return currentDir;
+      } else {
       }
     }
   }
