@@ -21,6 +21,10 @@ extension OperationTypeExtension on OperationType {
   }
 }
 
+/// A class that provides functionality for selecting directories.
+///
+/// This class can be used to open a directory picker dialog and retrieve
+/// the selected directory path.
 class DirectorySelector {
   OperationType selectOperation() {
     final choiceIndex = Select(
@@ -45,6 +49,11 @@ class DirectorySelector {
   }
 
   // Method to select specific files grouped by path
+  /// Selects specific files from a directory.
+  ///
+  /// This method allows the user to select specific files based on certain criteria.
+  ///
+  /// Returns a [String] representing the selected files.
   String selectSpecificFiles() {
     final currentDir = Directory.current;
 
@@ -84,7 +93,6 @@ class DirectorySelector {
     }
   }
 
-  // Confirmation step for selecting the entire project
   String confirmEntireProject() {
     final confirmation = Confirm(
       prompt: 'Are you sure you want to select the entire project?',
@@ -99,6 +107,12 @@ class DirectorySelector {
   }
 
   // Updated method to allow selecting folders without adding folder name prefix
+  /// Selects a folder path.
+  ///
+  /// This function allows the user to select a folder path from the file system.
+  ///
+  /// Returns:
+  ///   A [String] representing the selected folder path.
   String selectFolderPath() {
     String currentDir = Directory.current.path;
 
@@ -147,8 +161,7 @@ class DirectorySelector {
       // When a valid folder is selected
       if (Directory(currentDir).existsSync()) {
         return currentDir;
-      } else {
-      }
+      } else {}
     }
   }
 }
