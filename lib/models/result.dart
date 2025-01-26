@@ -1,11 +1,15 @@
-class Result {
+import 'dart:io';
+
+class LogRemovalResult {
   final bool success;
   final String message;
   final int filesProcessed;
+  final List<File> cleanedFiles; // Menyimpan file-file yang telah dibersihkan
 
-  Result({
+  LogRemovalResult({
     required this.success,
     required this.message,
-    this.filesProcessed = 0,
+    required this.filesProcessed,
+    required this.cleanedFiles,
   });
 }
