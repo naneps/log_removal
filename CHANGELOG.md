@@ -1,6 +1,16 @@
 # Changelog
 
 
+## [1.1.0] 2025-01-27
+### Added
+- Add documentation for codebase.
+- Add support for selecting specific log patterns to remove.
+
+### Change
+- Updated README with detailed instructions on how to use the CLI tool.
+- Added a section on how to run the program and select log patterns.
+  
+
 ## [1.1.0] 2025-01-26
 ### Added
 - Support for selecting specific log patterns to remove.

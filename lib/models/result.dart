@@ -1,5 +1,6 @@
 import 'dart:io';
 
+/// A class representing the result of a log removal operation.
 class LogRemovalResult {
   final bool success;
   final String message;
