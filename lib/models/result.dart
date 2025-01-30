@@ -13,4 +13,7 @@ class LogRemovalResult {
     required this.filesProcessed,
     required this.cleanedFiles,
   });
+  @override
+  String toString() =>
+      'LogRemovalResult(success: $success, message: $message, filesProcessed: $filesProcessed, cleanedFiles: $cleanedFiles)';
 }

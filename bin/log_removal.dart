@@ -5,6 +5,11 @@ import 'package:log_removal/core/log_removal_manager.dart';
 void main() {
   console.clearScreen();
 
+  //--version ord -V version number
+//   if (arguments.contains('-v') || arguments.contains('--version')) {
+//     print('log_removal version ${LogRemovalManager}');
+//     exit(0);
+//   }
   // Set a gradient-like effect using alternating colors
   console.setForegroundColor(ConsoleColor.cyan);
   console.writeLine("========================================");

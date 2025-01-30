@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:log_removal/models/result.dart';
+import 'package:log_removal/utils/path_utils.dart';
 
 /// A class responsible for cleaning logs in Dart files.
 ///
@@ -35,8 +36,13 @@ class LogCleaner {
   ///
   /// Returns a `LogRemovalResult` containing the outcome of the cleaning process.
   LogRemovalResult cleanLogs() {
-    if (!Directory(directoryPath).existsSync()) {
-      throw Exception('Invalid directory: $directoryPath');
+    if (!PathUtils.isValidDirectory(directoryPath)) {
+      return LogRemovalResult(
+        success: false,
+        message: 'Invalid directory path: $directoryPath',
+        filesProcessed: 0,
+        cleanedFiles: [],
+      );
     }
 
     final dartFiles = _getDartFiles(); // Get all Dart files in the directory
@@ -78,10 +84,16 @@ class LogCleaner {
 
     for (final file in files) {
       final lines = file.readAsLinesSync(); // Read file lines
+      print('🔧 Processing file: ${file.path}');
+      print('🔧 Number of lines: ${lines.length}');
       final updatedLines = lines
-          .where((line) => !logPatterns.any((pattern) =>
-              pattern.hasMatch(line))) // Filter out lines matching log patterns
+          .where(
+            (line) => !logPatterns.any(
+              (pattern) => pattern.hasMatch(line),
+            ),
+          ) // Filter out lines matching log patterns
           .toList();
+      print('🔧 Number of lines after cleaning: ${updatedLines.length}');
 
       if (updatedLines.length != lines.length) {
         file.writeAsStringSync(
