@@ -1,8 +1,7 @@
 name: log_removal
 description: "A CLI tool for removing unwanted logs from Dart and Flutter projects."
-version: 1.1.1
-homepage: "https://github.com/naneps/log_removal"  
-
+version: 1.1.2
+homepage: "https://github.com/naneps/log_removal"
 
 executables:
   log_removal: log_removal
@@ -10,11 +9,14 @@ executables:
 environment:
   sdk: '>=2.12.0 <4.0.0'
 
-
 dependencies:
-  dart_console: ^1.2.0
+  dart_console: ^1.1.2
   interact: ^2.2.0
-
 
 dev_dependencies:
   lints: ^2.0.0
+
+platforms:
+  windows:
+  linux:
+  macos:

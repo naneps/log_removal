@@ -2,10 +2,7 @@ import 'package:dart_console/dart_console.dart';
 import 'package:log_removal/core/directory_selector.dart';
 import 'package:log_removal/core/log_removal_manager.dart';
 
-final console = Console();
-
 void main() {
-  // Clear the screen
   console.clearScreen();
 
   // Set a gradient-like effect using alternating colors
@@ -52,3 +49,5 @@ void main() {
   console.writeLine("========================================");
   console.resetColorAttributes();
 }
+
+final console = Console();

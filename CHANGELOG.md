@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.2] - 2025-01-30
+### Added
+- **New Feature**: Added support for removing logs using custom function names without requiring manual regex input.
+- **New Feature**: Added input validation to ensure user-provided log names are valid.
+
 
 ## [1.1.0] 2025-01-27
 ### Added
