@@ -21,7 +21,7 @@ class LogRemovalManager {
   late final String
       targetPath; // The target path where the logs will be removed from
   final List<LogPattern> defaultPatterns = [
-    LogPattern(name: 'print() statements', pattern: 'print'),
+    LogPattern(name: 'print() statements', pattern: 'print\(.*\);'),
     LogPattern(name: 'debugPrint() statements', pattern: 'debugPrint\(.*\);'),
     LogPattern(name: 'log() statements', pattern: 'log\(.*\);'),
     LogPattern(name: 'logger() statements', pattern: 'logger\(.*\);'),

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.3] -  2025-01-30
+- **FIX BUG**: FIX PATTERN PRINT LOG.
+
+
 ## [1.1.2] - 2025-01-30
 ### Added
 - **New Feature**: Added support for removing logs using custom function names without requiring manual regex input.
