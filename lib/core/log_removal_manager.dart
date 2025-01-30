@@ -75,37 +75,38 @@ class LogRemovalManager {
     }
   }
 
-  /// Prompts the user to select log patterns to remove from the code.
+  /// Selects and returns a list of regular expression patterns used for log removal.
   ///
-  /// This method allows the user to select from predefined patterns or add custom ones.
-  /// It ensures at least one pattern is selected and returns the selected patterns.
+  /// This method is responsible for providing the patterns that will be used
+  /// to identify and remove log entries from the application logs.
+  ///
+  /// Returns:
+  ///   A list of [RegExp] objects representing the log patterns to be removed.
   List<RegExp> selectLogPatterns() {
     while (true) {
-      console.setForegroundColor(
-          ConsoleColor.brightBlue); // Set console color for prompt
+      console.setForegroundColor(ConsoleColor.brightBlue);
       print('\n🔧 Choose log patterns to remove:');
       final multiSelect = MultiSelect(
         prompt:
             '✨ Select the log patterns you want to remove: (use space to toggle)',
         options: defaultPatterns.map((pattern) => pattern.name).toList()
-          ..add('Custom Pattern 🔍'), // Add option for a custom pattern
+          ..add(
+              'Custom Log Name 🔍'), // Tambahkan opsi untuk memasukkan nama log custom
       ).interact();
 
-      final selectedPatterns = <RegExp>[]; // List to hold selected patterns
+      final selectedPatterns = <RegExp>[];
       for (final index in multiSelect) {
         if (index < defaultPatterns.length) {
           selectedPatterns
-              .add(defaultPatterns[index].pattern); // Add default patterns
+              .add(defaultPatterns[index].pattern); // Tambahkan pola default
           console.setForegroundColor(ConsoleColor.green);
           print('✅ Added: ${defaultPatterns[index].name}');
         } else {
-          final customPattern =
-              _getCustomPattern(); // Get custom pattern if selected
-          selectedPatterns.add(customPattern); // Add custom pattern
+          final customPattern = _getCustomPattern(); // Dapatkan pola custom
+          selectedPatterns.add(customPattern); // Tambahkan pola custom
         }
       }
 
-      // Ensure that at least one pattern is selected before proceeding
       if (selectedPatterns.isEmpty) {
         console.setForegroundColor(ConsoleColor.red);
         print('\n❌ You must select at least one log pattern!');
@@ -113,9 +114,21 @@ class LogRemovalManager {
         print('🔁 Returning to log pattern selection...\n');
       } else {
         console.resetColorAttributes();
-        return selectedPatterns; // Return the selected patterns as list of RegExp
+        return selectedPatterns; // Kembalikan daftar pola yang dipilih
       }
     }
+  }
+
+  /// Converts a log name (e.g., "print") to a regex pattern (e.g., "print\(.*\);").
+  ///
+  /// This method takes a log name as input and returns a regular expression
+  /// that matches the log statement with any arguments.
+  ///
+  /// - Parameter logName: The name of the log function to be converted.
+  /// - Returns: A `RegExp` object that matches the log statement.
+  /// Mengonversi nama log (misalnya, "print") menjadi regex (misalnya, "print\(.*\);")
+  RegExp _convertLogNameToRegex(String logName) {
+    return RegExp('$logName\\(.*\\);');
   }
 
   /// Prompts the user to enter a custom log pattern (regular expression).
@@ -124,29 +137,30 @@ class LogRemovalManager {
   /// If the pattern is invalid or empty, the user is prompted to enter it again.
   ///
   /// Returns a valid RegExp object for the custom pattern.
+  /// Meminta pengguna memasukkan nama log (bukan regex) dan mengonversinya ke regex
   RegExp _getCustomPattern() {
     while (true) {
       console.resetColorAttributes();
-      print('\n🔧 Enter your custom log pattern (Regex):');
-      final customPatternInput = Input(
-        prompt: 'Enter Regex Pattern:',
-        validator: (input) => input.isEmpty, // Ensure input is not empty
+      print(
+          '\n🔧 Enter the name of the log function (e.g., print, debugPrint, console.log):');
+      final logName = Input(
+        prompt: 'Enter Log Name:',
+        validator: (input) {
+          return input.isNotEmpty && !input.contains(RegExp(r'[^\w\.]'));
+        },
       ).interact();
 
-      if (customPatternInput.isEmpty) {
+      try {
+        final customPattern =
+            _convertLogNameToRegex(logName); // Konversi nama log ke regex
+        console.setForegroundColor(ConsoleColor.green);
+        print('✅ Custom log pattern added successfully!');
+        return customPattern; // Kembalikan regex yang dihasilkan
+      } catch (e) {
         console.setForegroundColor(ConsoleColor.red);
-        print('❌ Custom pattern cannot be empty. Please try again.');
-      } else {
-        try {
-          final customPattern =
-              RegExp(customPatternInput); // Try to compile regex
-          console.setForegroundColor(ConsoleColor.green);
-          print('✅ Custom pattern added successfully!');
-          return customPattern; // Return the custom pattern if valid
-        } catch (e) {
-          console.setForegroundColor(ConsoleColor.red);
-          print('❌ Invalid regex pattern: $e'); // Handle invalid regex
-        }
+        print('❌ Error creating regex: $e'); // Tangani error jika terjadi
+        console.setForegroundColor(ConsoleColor.yellow);
+        print('🔁 Please try again with a valid log name.\n');
       }
     }
   }
