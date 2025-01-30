@@ -10,6 +10,7 @@ environment:
   sdk: '>=2.12.0 <4.0.0'
 
 dependencies:
+  dart_console: ^1.1.2
   interact: ^2.2.0
 
 dev_dependencies:
