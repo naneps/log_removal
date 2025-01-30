@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.2.9] 
+- **FIX BUG**: FIX PROCESS DELETATION LOG
+- **ENHANCE** Enhance selector durectory
 ## [1.1.3] -  2025-01-30
 - **FIX BUG**: FIX PATTERN PRINT LOG.
 
