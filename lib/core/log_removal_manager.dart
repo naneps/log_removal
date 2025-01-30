@@ -14,74 +14,119 @@ import 'package:log_removal/models/pattern.dart';
 /// logRemovalManager.run();
 /// ```
 class LogRemovalManager {
-  final console =
-      Console(); // Console instance for user interaction and colored output
-  final DirectorySelector
-      directorySelector; // Instance used for selecting directory or files
-  late final String
-      targetPath; // The target path where the logs will be removed from
-  final List<LogPattern> defaultPatterns = [
-    LogPattern(name: 'print() statements', pattern: 'print\(.*\);'),
-    LogPattern(name: 'debugPrint() statements', pattern: 'debugPrint\(.*\);'),
-    LogPattern(name: 'log() statements', pattern: 'log\(.*\);'),
-    LogPattern(name: 'logger() statements', pattern: 'logger\(.*\);'),
-  ]; // Default patterns for common log statements
-
-  /// Constructor for initializing `LogRemovalManager` with a given [directorySelector].
+  /// A regular expression pattern used to match and remove log statements
+  /// that contain parentheses and end with a semicolon.
   ///
-  /// [directorySelector] is used to manage the directory or file selection for the operation.
+  /// This pattern matches any whitespace characters followed by an opening
+  /// parenthesis, any characters inside the parentheses, and any whitespace
+  /// characters followed by a semicolon.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Matches:
+  /// // log("This is a log statement");
+  /// // log("Another log statement");
+  ///
+  /// // Does not match:
+  /// // print("This is not a log statement");
+  /// ```
+  static final _regexPatterns = r'\s*\(.*\)\s*;';
+
+  /// Console instance for user interaction and colored output
+  final console = Console();
+
+  ///  Instance used for selecting directory or files
+  final DirectorySelector directorySelector;
+
+  /// The path to the target directory or file that will be managed by the log removal process.
+  late final String targetPath;
+
+  /// A list of default log patterns to be removed from the code.
+  ///
+  /// This list contains instances of [LogPattern] that match common logging
+  /// statements such as `print()`, `debugPrint()`, `log()`, and `logger()`.
+  /// Each pattern is combined with a predefined set of regular expression
+  /// patterns stored in [_regexPatterns].
+  ///
+  /// - `print() statements`: Matches `print` statements.
+  /// - `debugPrint() statements`: Matches `debugPrint` statements.
+  /// - `log() statements`: Matches `log` statements.
+  /// - `logger() statements`: Matches `logger` statements.
+  final List<LogPattern> defaultPatterns = [
+    LogPattern(
+        name: 'print() statements', pattern: r'\bprint' + _regexPatterns),
+    LogPattern(
+        name: 'debugPrint() statements',
+        pattern: r'\bdebugPrint' + _regexPatterns),
+    LogPattern(name: 'log() statements', pattern: r'\blog' + _regexPatterns),
+    LogPattern(
+        name: 'logger() statements', pattern: r'\blogger' + _regexPatterns),
+  ];
+
   LogRemovalManager(this.directorySelector);
 
-  /// Starts the log removal process, which includes selecting the operation type,
-  /// specifying the target path, and choosing the log patterns to remove.
+  /// Runs the log removal process.
   ///
-  /// The method runs asynchronously and displays a progress bar while cleaning the logs.
+  /// This method sets the console text color, selects the operation type and target path,
+  /// selects log patterns, and initializes the log cleaner. It then starts the log removal
+  /// process and prints the result, including the number of files processed and the list of
+  /// cleaned files, if any.
+  ///
+  /// The console text color is changed to indicate different stages of the process.
+  ///
+  /// Throws an exception if the log removal process fails.
   Future<void> run() async {
-    console.setForegroundColor(
-        ConsoleColor.brightBlue); // Set console color for the message
-    final operationType =
-        directorySelector.selectOperation(); // Select operation type
-    targetPath =
-        directorySelector.selectTargetPath(operationType); // Select target path
+    console.setForegroundColor(ConsoleColor.brightBlue);
+    final operationType = directorySelector.selectOperation();
+    targetPath = directorySelector.selectTargetPath(operationType);
 
-    final patterns =
-        selectLogPatterns(); // Get the log patterns selected by the user
-    final logCleaner =
-        LogCleaner(targetPath, patterns); // Create the LogCleaner instance
+    final patterns = selectLogPatterns();
+    final logCleaner = LogCleaner(targetPath, patterns);
 
-    console.setForegroundColor(
-        ConsoleColor.cyan); // Set console color for the next message
-    print('\nStarting log removal process...'); // Notify user of process start
+    console.setForegroundColor(ConsoleColor.cyan);
+    print('\nStarting log removal process...');
 
-    // Perform log cleaning and wait for result
     final result = await logCleaner.cleanLogs();
+    if (result.success) {
+      console.setForegroundColor(ConsoleColor.cyan);
+      print('\n✅ ${result.message}');
+      print('📁 Files Processed: ${result.filesProcessed}');
 
-    console.setForegroundColor(
-        ConsoleColor.cyan); // Set console color for result message
-    print('\n✅ ${result.message}'); // Display the result message
-    print(
-        '📁 Files Processed: ${result.filesProcessed}'); // Show the number of files processed
-
-    // Display the cleaned files or a message that no logs were found
-    if (result.cleanedFiles.isEmpty) {
-      console.setForegroundColor(ConsoleColor.brightBlue);
-      print('🎉 All clean! No unwanted logs found.');
-    } else {
-      console.setForegroundColor(ConsoleColor.magenta);
-      print('📝 Cleaned Files:');
-      for (var file in result.cleanedFiles) {
-        print('- ${file.path}'); // Print the cleaned files
+      if (result.cleanedFiles.isEmpty) {
+        console.setForegroundColor(ConsoleColor.brightBlue);
+        print('🎉 All clean! No unwanted logs found.');
+      } else {
+        console.setForegroundColor(ConsoleColor.magenta);
+        print('📝 Cleaned Files:');
+        for (var file in result.cleanedFiles) {
+          print('- ${file.path}');
+        }
       }
+    } else {
+      console.setForegroundColor(ConsoleColor.brightRed);
+      print('❌ ${result.message}');
+      throw Exception('Log removal process failed: ${result.message}');
     }
+
+    console.resetColorAttributes();
   }
 
-  /// Selects and returns a list of regular expression patterns used for log removal.
+  /// Prompts the user to select log patterns to remove from a list of default patterns
+  /// or to input a custom log pattern. The user can toggle selections using the space key.
   ///
-  /// This method is responsible for providing the patterns that will be used
-  /// to identify and remove log entries from the application logs.
+  /// The method will continue to prompt the user until at least one log pattern is selected.
   ///
-  /// Returns:
-  ///   A list of [RegExp] objects representing the log patterns to be removed.
+  /// Returns a list of selected [RegExp] patterns.
+  ///
+  /// - If a default pattern is selected, it is added to the list of selected patterns.
+  /// - If the custom log name option is selected, the user is prompted to input a custom pattern,
+  ///   which is then added to the list of selected patterns.
+  ///
+  /// The method provides visual feedback in the console using different colors:
+  /// - Blue for the initial prompt
+  /// - Green for confirming a pattern has been added
+  /// - Red for indicating that no patterns were selected
+  /// - Yellow for indicating that the selection process will restart
   List<RegExp> selectLogPatterns() {
     while (true) {
       console.setForegroundColor(ConsoleColor.brightBlue);
@@ -90,20 +135,18 @@ class LogRemovalManager {
         prompt:
             '✨ Select the log patterns you want to remove: (use space to toggle)',
         options: defaultPatterns.map((pattern) => pattern.name).toList()
-          ..add(
-              'Custom Log Name 🔍'), // Tambahkan opsi untuk memasukkan nama log custom
+          ..add('Custom Log Name 🔍'),
       ).interact();
 
       final selectedPatterns = <RegExp>[];
       for (final index in multiSelect) {
         if (index < defaultPatterns.length) {
-          selectedPatterns
-              .add(defaultPatterns[index].pattern); // Tambahkan pola default
+          selectedPatterns.add(defaultPatterns[index].pattern!);
           console.setForegroundColor(ConsoleColor.green);
           print('✅ Added: ${defaultPatterns[index].name}');
         } else {
-          final customPattern = _getCustomPattern(); // Dapatkan pola custom
-          selectedPatterns.add(customPattern); // Tambahkan pola custom
+          final customPattern = _getCustomPattern();
+          selectedPatterns.add(customPattern);
         }
       }
 
@@ -114,30 +157,53 @@ class LogRemovalManager {
         print('🔁 Returning to log pattern selection...\n');
       } else {
         console.resetColorAttributes();
-        return selectedPatterns; // Kembalikan daftar pola yang dipilih
+        return selectedPatterns;
       }
     }
   }
 
-  /// Converts a log name (e.g., "print") to a regex pattern (e.g., "print\(.*\);").
+  /// Converts a log name to a regular expression pattern.
   ///
-  /// This method takes a log name as input and returns a regular expression
-  /// that matches the log statement with any arguments.
+  /// The log name must consist of only alphanumeric characters. If the log
+  /// name contains any non-alphanumeric characters, an [ArgumentError] is
+  /// thrown.
   ///
-  /// - Parameter logName: The name of the log function to be converted.
-  /// - Returns: A `RegExp` object that matches the log statement.
-  /// Mengonversi nama log (misalnya, "print") menjadi regex (misalnya, "print\(.*\);")
+  /// The returned regular expression matches the log name followed by an
+  /// optional whitespace, an opening parenthesis, any characters inside the
+  /// parentheses, a closing parenthesis, optional whitespace, and a semicolon.
+  ///
+  /// Example:
+  /// ```
+  /// final regex = _convertLogNameToRegex('logName');
+  /// print(regex.hasMatch('logName(param1, param2);')); // true
+  /// ```
+  ///
+  /// [logName] The name of the log to be converted to a regular expression.
+  /// Returns a [RegExp] object that matches the specified log name pattern.
+
   RegExp _convertLogNameToRegex(String logName) {
-    return RegExp('$logName\\(.*\\);');
+    if (!RegExp(r'^\w+$').hasMatch(logName)) {
+      throw ArgumentError(
+          'Invalid log name. Only alphanumeric characters are allowed.');
+    }
+    final pattern = r'\b' + logName + r'\s*\(.*\)\s*;';
+    print("🔧 Converted log name => '$logName' to pattern: '$pattern'");
+    return RegExp(pattern);
   }
 
-  /// Prompts the user to enter a custom log pattern (regular expression).
+  /// Prompts the user to enter the name of a log function and converts it to a regular expression pattern.
   ///
-  /// This method ensures the custom pattern is valid before adding it to the selected patterns.
-  /// If the pattern is invalid or empty, the user is prompted to enter it again.
+  /// This method continuously prompts the user to input a valid log function name until a valid name is provided.
+  /// It validates the input to ensure it contains only word characters and dots. If the input is valid, it converts
+  /// the log function name to a regular expression pattern and returns it. If an error occurs during the conversion,
+  /// it displays an error message and prompts the user to try again.
   ///
-  /// Returns a valid RegExp object for the custom pattern.
-  /// Meminta pengguna memasukkan nama log (bukan regex) dan mengonversinya ke regex
+  /// Returns:
+  ///   A [RegExp] object representing the custom log pattern.
+  ///
+  /// Throws:
+  ///   An exception if the log function name cannot be converted to a regular expression pattern.
+
   RegExp _getCustomPattern() {
     while (true) {
       console.resetColorAttributes();
@@ -146,19 +212,18 @@ class LogRemovalManager {
       final logName = Input(
         prompt: 'Enter Log Name:',
         validator: (input) {
-          return input.isNotEmpty && !input.contains(RegExp(r'[^\w\.]'));
+          return input.isNotEmpty;
         },
       ).interact();
 
       try {
-        final customPattern =
-            _convertLogNameToRegex(logName); // Konversi nama log ke regex
+        final customPattern = _convertLogNameToRegex(logName);
         console.setForegroundColor(ConsoleColor.green);
         print('✅ Custom log pattern added successfully!');
-        return customPattern; // Kembalikan regex yang dihasilkan
+        return customPattern;
       } catch (e) {
         console.setForegroundColor(ConsoleColor.red);
-        print('❌ Error creating regex: $e'); // Tangani error jika terjadi
+        print('❌ Error creating regex: $e');
         console.setForegroundColor(ConsoleColor.yellow);
         print('🔁 Please try again with a valid log name.\n');
       }

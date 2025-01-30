@@ -17,7 +17,7 @@
 ///   Creates a new [LogPattern] instance with the given name and pattern.
 class LogPattern {
   final String name;
-  late final RegExp pattern;
+  RegExp? pattern;
 
   LogPattern({required this.name, required String pattern}) {
     this.pattern = RegExp(pattern);

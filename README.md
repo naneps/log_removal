@@ -121,7 +121,7 @@ The predefined log patterns include:
 3. **`logger.*(...)`**: Matches logging functions like `logger.d()` or `logger.e()`.  
 4. **`logMessage(...)`**: Matches custom log functions like `logMessage()`.  
 
-In addition to these, you can add custom log patterns using regex to handle unique logging formats in your projects.  
+In addition to these, you can add custom log patterns using name of log to handle unique logging formats in your projects.  
 
 ---
 

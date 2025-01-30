@@ -9,7 +9,6 @@ import 'dart:io';
 /// Example usage:
 /// ```dart
 /// final dartFiles = FileHandler.getDartFiles(Directory('path/to/directory'));
-/// print(dartFiles);
 /// ```
 class FileHandler {
   /// Retrieves all Dart files from a given directory.
