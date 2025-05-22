@@ -1,144 +1,67 @@
+# Dart Log Remover
+
+## Description
+
+Quickly remove `print()` and `dart:developer log()` statements from your Dart code. This extension helps clean up your codebase by removing debugging logs before committing or publishing your code.
+
+## Features
+
+*   **Remove Log Statements:** Deletes all found `print(...);` and `log(...);` statements from the currently active Dart file.
+*   **Dry-run Mode:** Preview which log statements would be removed without actually modifying the file. The list of logs is shown in an Output Channel.
+*   **Supported Log Types:**
+    *   `print(...);` statements.
+    *   `log(...);` statements from the `dart:developer` package.
+
+## Installation
+
+Currently, this extension is intended for local development and testing. To use it:
+
+1.  **Clone the repository** (or ensure you have the source code).
+2.  **Install dependencies:** Open the project folder in your terminal and run `npm install`.
+3.  **Compile the extension:** Run `npm run compile` (or `npm run watch` for automatic compilation on changes).
+4.  **Open in VS Code:** Open the extension's project folder in VS Code.
+5.  **Run the Extension (Development Host):**
+    *   Press `F5` or go to "Run" -> "Start Debugging". This will open a new VS Code window (the "Extension Development Host") with the extension loaded.
+    *   Open any Dart project or file in this new window to test the extension.
+
+Alternatively, to install it more permanently for local use (sideloading):
+
+1.  **Package the extension:**
+    *   You'll need the `vsce` (Visual Studio Code Extensions) packaging tool. If you don't have it, install it globally: `npm install -g vsce`
+    *   In the root directory of the extension project, run: `vsce package`
+    *   This will create a `.vsix` file (e.g., `dart-log-remover-0.0.1.vsix`).
+2.  **Install from VSIX:**
+    *   In VS Code, open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`).
+    *   Type "Extensions: Install from VSIX..." and select it.
+    *   Locate the `.vsix` file you created and select it.
+    *   Reload VS Code when prompted.
+
+## Usage
+
+### Remove Log Statements
+
+1.  Open a Dart file (`.dart`) in VS Code.
+2.  Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`).
+3.  Type "Remove Log Statements" and select the command `Dart Log Remover: Remove Log Statements`.
+4.  If log statements are found, they will be removed from the file. An information message will confirm the number of statements removed.
+
+### Dry-run: Show Logs to be Removed
+
+1.  Open a Dart file (`.dart`) in VS Code.
+2.  Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P`).
+3.  Type "Dry-run: Show Logs to be Removed" and select the command `Dart Log Remover: Dry-run: Show Logs to be Removed`.
+4.  The extension will scan the file for log statements.
+5.  The results will be displayed in the Output panel, under a channel named "Dart Log Remover". An information message will also appear, indicating how many potential logs were found.
+
+## Known Issues/Limitations
+
+*   **Regex-Based Matching:** The current implementation uses regular expressions to identify log statements. While designed to cover common cases, it may not perfectly handle all complex or unusually formatted multiline log statements. For example, a `print` statement where the closing `);` is on a much later line and involves complex string concatenation might not be fully captured.
+*   **No Configuration:** There are currently no settings to customize which types of logs are removed (e.g., only `print`, or only `log`).
+
+## Contributing
+
+Contributions are welcome! If you have suggestions for improvements or find any issues, please feel free to open an issue or submit a pull request on the project's repository.
 
 ---
 
-# 🔧 Log Removal  
-
-**Log Removal** is a command-line tool designed to clean up Dart/Flutter projects by removing unwanted log statements, such as `print`, `debugPrint`, `logger`, and other custom log patterns.  
-
-This tool allows users to select predefined log patterns or add their custom patterns using regular expressions (regex). It can be installed globally for seamless usage across multiple projects.  
-
----
-
-## ✨ Key Features  
-
-- **Global Usage**: Install once and use it in all your Dart/Flutter projects.  
-- **Multi-select**: Remove multiple log patterns in one go.  
-- **Custom Patterns**: Add custom log patterns with regex.  
-- **High Compatibility**: Specifically built for Dart and Flutter projects.  
-- **User-Friendly**: A simple text-based interface to select files or folders for processing.  
-
----
-
-## ⚙️ Installation  
-
-### 1. Global Installation  
-
-Install **Log Removal** globally to use it across all your projects with the following command:  
-
-```bash
-dart pub global activate log_removal
-```  
-
-After installation, the `log_removal` command will be available globally in your terminal, ready to use in any project directory.  
-
-### 2. Local Installation (Optional)  
-
-If you want to use **Log Removal** in a specific project, add it as a dependency:  
-
-```yaml
-dependencies:
-  log_removal: <latest_version>
-```  
-
-Then, run it using the following command within the project:  
-
-```bash
-dart run log_removal
-```  
-
----
-
-## 🚀 How to Use  
-
-### 1. Running the Program  
-
-Once installed, run the program with:  
-
-```bash
-log_removal
-```  
-
-### 2. Select an Operation  
-
-Choose one of the following options:  
-- **Specific File**: Clean logs from a specific file.  
-- **Specific Folder**: Clean logs from a specific folder.  
-- **Entire Project**: Clean logs from the entire project.  
-
-### 3. Choose Log Patterns  
-
-The program will display a list of log patterns to remove, such as:  
-- `print(...)`  
-- `debugPrint(...)`  
-- `logger.*(...)`  
-- `logMessage(...)`  
-
-You can select multiple patterns or add a custom pattern using regex.  
-
-### 4. Cleaning Results  
-
-After processing, the program will display:  
-- The number of files processed.  
-- The number of logs removed.  
-
----
-
-## 📂 Example  
-
-### Running the CLI  
-
-```bash
-$ log_removal
-🔧 Welcome to Log Removal!
-Let's clean up your project from unwanted logs. 🚀
-
-📂 Select a folder from the current directory:
-✅ Folder selected: /path/to/project
-
-Choose log patterns to remove:
-[0] print(...)
-[1] debugPrint(...)
-[2] logger.*(...)
-[3] logMessage(...)
-[4] Custom pattern
-Select options (e.g., 0,1,3): 0,1,4
-
-🔧 Enter your custom regex pattern:
-^\s*customLog\(.*\);\s*$
-
-✅ Custom pattern added.
-✅ Log removal completed.
-📁 Files Processed: 5
-```  
-
----
-
-## 🛠 Supported Log Patterns  
-
-The predefined log patterns include:  
-1. **`print(...)`**: Matches `print()` statements.  
-2. **`debugPrint(...)`**: Matches `debugPrint()` statements.  
-3. **`logger.*(...)`**: Matches logging functions like `logger.d()` or `logger.e()`.  
-4. **`logMessage(...)`**: Matches custom log functions like `logMessage()`.  
-
-In addition to these, you can add custom log patterns using name of log to handle unique logging formats in your projects.  
-
----
-
-## 🤝 Contributing  
-
-Contributions are welcome!  
-To contribute:  
-1. **Fork** this repository.  
-2. Create a new branch for your feature or fix.  
-3. Submit a pull request with a clear description of your changes.  
-
----
-
-## 📄 License  
-
-This project is licensed under the [MIT License](LICENSE).  
-
----  
-
-This version is cleaner, more concise, and user-friendly. 🎉
+_This README was generated for the Dart Log Remover VS Code extension._

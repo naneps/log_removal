@@ -1,0 +1,50 @@
+{
+  "name": "dart-log-remover",
+  "displayName": "Dart Log Remover",
+  "description": "A VS Code extension to remove logging statements from Dart code.",
+  "version": "0.0.1",
+  "publisher": "yourname",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:dart-log-remover.removeLogs",
+    "onCommand:dart-log-remover.dryRunRemoveLogs"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dart-log-remover.removeLogs",
+        "title": "Remove Log Statements"
+      },
+      {
+        "command": "dart-log-remover.dryRunRemoveLogs",
+        "title": "Dry-run: Show Logs to be Removed"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "20.2.5",
+    "eslint": "^8.41.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.2"
+  }
+}
