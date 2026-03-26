@@ -11,20 +11,10 @@ import * as vscode from 'vscode';
 // - Optional whitespace before semicolon
 // - Semicolon ';'
 // - Captures the entire line.
-export const PRINT_LOG_REGEX = /^\s*print\s*\([\s\S]*?\)\s*;\s*$/gm;
-
-// Regular expression to find 'log(...);' statements from dart:developer.
-// This regex handles:
-// - Optional whitespace before 'log'
-// - 'log' keyword
-// - Optional whitespace after 'log'
-// - Opening parenthesis '('
-// - Any characters inside the parentheses (non-greedy match)
-// - Closing parenthesis ')'
-// - Optional whitespace before semicolon
-// - Semicolon ';'
-// - Captures the entire line.
-export const LOG_FUNCTION_REGEX = /^\s*log\s*\([\s\S]*?\)\s*;\s*$/gm;
+export const PRINT_LOG_REGEX = /\bprint\s*\([\s\S]*?\)\s*;/gm;
+export const DEBUG_PRINT_REGEX = /\bdebugPrint\s*\([\s\S]*?\)\s*;/gm;
+export const LOG_FUNCTION_REGEX = /\blog\s*\([\s\S]*?\)\s*;/gm;
+export const LOGGER_REGEX = /\blogger\s*\([\s\S]*?\)\s*;/gm;
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('Congratulations, your extension "dart-log-remover" is now active!');
@@ -44,7 +34,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Combine regexes for a single pass, or iterate twice
     const combinedRegex = new RegExp(
-      `(${PRINT_LOG_REGEX.source})|(${LOG_FUNCTION_REGEX.source})`,
+      `(${PRINT_LOG_REGEX.source})|(${DEBUG_PRINT_REGEX.source})|(${LOG_FUNCTION_REGEX.source})|(${LOGGER_REGEX.source})`,
       'gm'
     );
 
@@ -84,9 +74,9 @@ export function activate(context: vscode.ExtensionContext) {
       return;
     }
 
-    editor.edit(editBuilder => {
+    editor.edit((editBuilder: vscode.TextEditorEdit) => {
       edits.forEach(edit => editBuilder.delete(edit.range)); // editBuilder.replace(edit.range, edit.newText) if we were replacing
-    }).then(success => {
+    }).then((success: boolean) => {
       if (success) {
         vscode.window.showInformationMessage(`Removed ${matchesFound} log statement(s).`);
       } else {
@@ -110,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
     let logsFound: { lineNumber: number, content: string }[] = [];
 
     const combinedRegex = new RegExp(
-      `(${PRINT_LOG_REGEX.source})|(${LOG_FUNCTION_REGEX.source})`,
+      `(${PRINT_LOG_REGEX.source})|(${DEBUG_PRINT_REGEX.source})|(${LOG_FUNCTION_REGEX.source})|(${LOGGER_REGEX.source})`,
       'gm'
     );
 

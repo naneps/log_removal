@@ -20,6 +20,6 @@ class LogPattern {
   RegExp? pattern;
 
   LogPattern({required this.name, required String pattern}) {
-    this.pattern = RegExp(pattern);
+    this.pattern = RegExp(pattern, dotAll: true);
   }
 }

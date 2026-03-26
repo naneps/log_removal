@@ -10,10 +10,6 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "onCommand:dart-log-remover.removeLogs",
-    "onCommand:dart-log-remover.dryRunRemoveLogs"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [

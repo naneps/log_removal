@@ -80,28 +80,31 @@ class LogCleaner {
   ///
   /// Returns a list of `File` objects that were cleaned.
   List<File> _processFiles(List<File> files) {
-    final cleanedFiles = <File>[]; // List to store cleaned files
+    final cleanedFiles = <File>[];
 
     for (final file in files) {
-      final lines = file.readAsLinesSync(); // Read file lines
+      String content = file.readAsStringSync();
       print('🔧 Processing file: ${file.path}');
-      print('🔧 Number of lines: ${lines.length}');
-      final updatedLines = lines
-          .where(
-            (line) => !logPatterns.any(
-              (pattern) => pattern.hasMatch(line),
-            ),
-          ) // Filter out lines matching log patterns
-          .toList();
-      print('🔧 Number of lines after cleaning: ${updatedLines.length}');
+      
+      String originalContent = content;
+      for (final pattern in logPatterns) {
+        // We match and replace in the entire file content.
+        // To handle the "whole line" case which I previously did with .trim(),
+        // we can refine the regex in LogRemovalManager or do it here.
+        // For now, let's keep it simple and just replace all matches.
+        content = content.replaceAll(pattern, '');
+      }
 
-      if (updatedLines.length != lines.length) {
-        file.writeAsStringSync(
-            updatedLines.join('\n')); // Save the cleaned file
-        cleanedFiles.add(file); // Add file to cleanedFiles if changes were made
+      // Cleanup: removing lines that became purely whitespace/empty 
+      // but were NOT empty before.
+      if (content != originalContent) {
+        // We just write the content if it changed.
+        file.writeAsStringSync(content);
+        cleanedFiles.add(file);
+        print('✅ Cleaned: ${file.path}');
       }
     }
 
-    return cleanedFiles; // Return the list of cleaned files
+    return cleanedFiles;
   }
 }

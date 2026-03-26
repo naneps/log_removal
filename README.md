@@ -64,4 +64,37 @@ Contributions are welcome! If you have suggestions for improvements or find any 
 
 ---
 
-_This README was generated for the Dart Log Remover VS Code extension._
+## 🛠️ Log Removal CLI Tool
+
+The project also includes a powerful Command Line Interface (CLI) tool for bulk log removal across entire projects or specific directories.
+
+### CLI Installation
+
+To use the CLI tool globally on your machine:
+
+1.  Navigate to the project root directory.
+2.  Activate the package globally using Dart:
+    ```bash
+    dart pub global activate --source path .
+    ```
+3.  Now you can run the tool from anywhere using:
+    ```bash
+    log_removal
+    ```
+
+### CLI Usage
+
+1.  **Run the command:** `log_removal`
+2.  **Select Target:** Choose whether to clean a specific file, a folder, or the current directory.
+3.  **Select Patterns:** Interactively choose which log types to remove (`print`, `debugPrint`, `log`, `logger`).
+4.  **Custom Logs:** You can also enter a custom log function name (e.g., `myCustomLog`).
+5.  **Confirm:** The tool will process the files and show you a summary of cleaned files.
+
+### Why use the CLI?
+*   **Bulk Processing:** Clean hundreds of files in seconds.
+*   **Recursive Search:** Automatically finds all `.dart` files in subdirectories.
+*   **Interactive:** Easy-to-use interface with color-coded feedback.
+
+---
+
+_This README covers both the VS Code extension and the Dart CLI tool._

@@ -30,7 +30,7 @@ class LogRemovalManager {
   /// // Does not match:
   /// // print("This is not a log statement");
   /// ```
-  static final _regexPatterns = r'\s*\(.*\)\s*;';
+  static final _regexPatterns = r'\s*\([\s\S]*?\)\s*;';
 
   /// Console instance for user interaction and colored output
   final console = Console();
@@ -182,11 +182,11 @@ class LogRemovalManager {
   /// Returns a [RegExp] object that matches the specified log name pattern.
 
   RegExp _convertLogNameToRegex(String logName) {
-    if (!RegExp(r'^\w+$').hasMatch(logName)) {
+    if (!RegExp(r'^[\w.]+$').hasMatch(logName)) {
       throw ArgumentError(
-          'Invalid log name. Only alphanumeric characters are allowed.');
+          'Invalid log name. Only alphanumeric characters and dots are allowed.');
     }
-    final pattern = r'\b' + logName + r'\s*\(.*\)\s*;';
+    final pattern = r'\b' + logName.replaceAll('.', r'\.') + r'\s*\([\s\S]*?\)\s*;';
     print("🔧 Converted log name => '$logName' to pattern: '$pattern'");
     return RegExp(pattern);
   }

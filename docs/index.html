@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Removal | Clean Your Code Effortlessly</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">🔧 Log Removal</div>
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#install">Install</a></li>
+                <li><a href="https://github.com/naneps/log_removal" target="_blank">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Banish Logs, <span class="highlight">Unleash Code.</span></h1>
+                <p>The smartest CLI & VS Code toolkit to strip redundant logs from your Dart and Flutter projects before you ship.</p>
+                <div class="cta-group">
+                    <a href="#install" class="btn primary">Get Started</a>
+                    <a href="https://pub.dev" class="btn secondary">View on Pub.dev</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="code-card">
+                    <div class="code-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <pre><code><span class="comment">// Before</span>
+<span class="keyword">void</span> main() {
+  <span class="func">print</span>(<span class="str">'Debug!'</span>);
+  <span class="func">doWork</span>();
+}
+
+<span class="comment">// After</span>
+<span class="keyword">void</span> main() {
+  <span class="func">doWork</span>();
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="section-title">
+                <h2>Powerful Capabilities</h2>
+                <p>Designed for safety, speed, and cross-platform flexibility.</p>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">🧹</div>
+                    <h3>Safe Precision</h3>
+                    <p>Only removes the log statement itself. If your log is part of a larger line, your code stays intact.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📄</div>
+                    <h3>Multi-line Magic</h3>
+                    <p>Detects and removes log statements spanning multiple lines with ease.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📦</div>
+                    <h3>All Log Types</h3>
+                    <p>Supports <code>print</code>, <code>debugPrint</code>, <code>log</code>, and <code>logger</code> by default, plus custom names.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">💻</div>
+                    <h3>Hybrid Power</h3>
+                    <p>Use the CLI for bulk project cleaning, or the VS Code extension for fine-tuned active editing.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="install" class="installation">
+            <div class="section-title">
+                <h2>Quick Start</h2>
+            </div>
+            <div class="install-tabs">
+                <div class="install-card">
+                    <h3>CLI Tool</h3>
+                    <code>dart pub global activate log_removal</code>
+                    <p>Then just run <code>log_removal</code> in any directory.</p>
+                </div>
+                <div class="install-card">
+                    <h3>VS Code</h3>
+                    <p>Search for <strong>"Dart Log Remover"</strong> in the Extension Marketplace and install with one click.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Log Removal CLI. Proudly built for the Dart & Flutter community.</p>
+    </footer>
+</body>
+</html>

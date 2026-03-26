@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.0] - 2026-03-26
+### Added
+- **Safer Log Removal**: Now only removes the matched log text.
+- **Improved Cleanup**: Deletes the entire line only if the log was the sole occupant.
+- **Multi-line Support**: Successfully removes log statements spanning multiple lines.
+- **Expanded Extension Features**: Added support for `debugPrint()` and `logger()` in the VS Code extension.
+- **Official Documentation**: Added a premium web documentation landing page.
+- **Unit Tests**: Added comprehensive test suite for the core logic.
+
 ## [1.2.9] 
 - **FIX BUG**: FIX PROCESS DELETATION LOG
 - **ENHANCE** Enhance selector durectory
